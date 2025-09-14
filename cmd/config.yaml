@@ -11,10 +11,10 @@ server:
     client_id: "backend"
     client_secret: "mysecret"
     redirect_url: "http://localhost:8081/callback"
-    endpoints: 
-        auth_url: "http://localhost:8080/realms/demo/protocol/openid-connect/auth"
-        token_url: "http://localhost:8080/realms/demo/protocol/openid-connect/token"
-        tokeninfo_url: "http://localhost:8080/realms/demo/protocol/openid-connect/tokeninfo"
+    endpoints:
+      auth_url: "http://localhost:8080/realms/demo/protocol/openid-connect/auth"
+      token_url: "http://localhost:8080/realms/demo/protocol/openid-connect/token"
+      tokeninfo_url: "http://localhost:8080/realms/demo/protocol/openid-connect/tokeninfo"
 
 routes:
   - path: "/api/opensource"
@@ -41,4 +41,4 @@ routes:
         description: "Security Team"
 
   - path: "/api/public"
-    teams: []  # Aucune restriction d'accès
+    teams: [] # Aucune restriction d'accès

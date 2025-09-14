@@ -14,5 +14,5 @@ echo $ACCESS_TOKEN
 curl -X GET -H "Authorization: Bearer $ACCESS_TOKEN" http://localhost:8081/api/public | jq .
 
 
-
+# Utiliser le token pour appeler l'API protégée
 curl -X GET -H "Authorization: Bearer $ACCESS_TOKEN" http://localhost:8081/api/opensource | jq .
