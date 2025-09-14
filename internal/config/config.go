@@ -33,15 +33,16 @@ type Application struct {
 }
 
 type Server struct {
-	Port       string `mapstructure:"port"`
-	BackendURL string `mapstructure:"backend_url"`
-	TimeOut    int    `mapstructure:"timeout"`
-	OAuth2     OAuth2 `mapstructure:"oauth2"`
+	Port          string `mapstructure:"port"`
+	DefaultTarget string `mapstructure:"default_target"`
+	TimeOut       int    `mapstructure:"timeout"`
+	OAuth2        OAuth2 `mapstructure:"oauth2"`
 }
 
 type Route struct {
-	Path  string `mapstructure:"path"`
-	Teams []Team `mapstructure:"teams"`
+	Path   string `mapstructure:"path"`
+	Target string `mapstructure:"target"`
+	Teams  []Team `mapstructure:"teams"`
 }
 
 type Team struct {
@@ -59,4 +60,5 @@ type OAuth2Endpoints struct {
 	AuthURL      string `mapstructure:"auth_url"`
 	TokenURL     string `mapstructure:"token_url"`
 	TokenInfoURL string `mapstructure:"tokeninfo_url"`
+	UserInfoURL  string `mapstructure:"userinfo_url"`
 }

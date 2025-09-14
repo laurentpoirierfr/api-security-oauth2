@@ -5,7 +5,7 @@ application:
 
 server:
   port: 8081
-  backend_url: http://localhost:3000/api
+  default_target: http://localhost:3000
   timeout: 10
   oauth2:
     client_id: "backend"
@@ -15,16 +15,21 @@ server:
       auth_url: "http://localhost:8080/realms/demo/protocol/openid-connect/auth"
       token_url: "http://localhost:8080/realms/demo/protocol/openid-connect/token"
       tokeninfo_url: "http://localhost:8080/realms/demo/protocol/openid-connect/tokeninfo"
+      userinfo_url: "http://localhost:8080/realms/demo/protocol/openid-connect/userinfo"
 
 routes:
   - path: "/api/opensource"
+    target: "http://localhost:3000/api/opensource"
     teams:
       - name: "opensourceguild"
         description: "OpenSource Guild"
       - name: "opensource-contributors"
         description: "OpenSource Contributors"
+      - name: "backend"
+        description: "Default backend access" 
 
   - path: "/api/platform"
+    target: "http://localhost:3000/api/platform"
     teams:
       - name: "tm"
         description: "Platform / System"
@@ -34,6 +39,7 @@ routes:
         description: "Platform Operations"
 
   - path: "/api/admin"
+    target: "http://localhost:3000/api/admin"
     teams:
       - name: "admin-team"
         description: "Administration Team"
@@ -41,4 +47,5 @@ routes:
         description: "Security Team"
 
   - path: "/api/public"
+    target: "http://localhost:3000/api/public"
     teams: [] # Aucune restriction d'accès
