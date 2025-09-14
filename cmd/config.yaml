@@ -1,0 +1,44 @@
+application:
+  name: api-security-oauth2
+  description: API Security with OAuth2 Example
+  version: 1.0.0
+
+server:
+  port: 8081
+  backend_url: http://localhost:3000/api
+  timeout: 10
+  oauth2:
+    client_id: "backend"
+    client_secret: "mysecret"
+    redirect_url: "http://localhost:8081/callback"
+    endpoints: 
+        auth_url: "http://localhost:8080/realms/demo/protocol/openid-connect/auth"
+        token_url: "http://localhost:8080/realms/demo/protocol/openid-connect/token"
+        tokeninfo_url: "http://localhost:8080/realms/demo/protocol/openid-connect/tokeninfo"
+
+routes:
+  - path: "/api/opensource"
+    teams:
+      - name: "opensourceguild"
+        description: "OpenSource Guild"
+      - name: "opensource-contributors"
+        description: "OpenSource Contributors"
+
+  - path: "/api/platform"
+    teams:
+      - name: "tm"
+        description: "Platform / System"
+      - name: "teapot"
+        description: "Platform / Cloud API"
+      - name: "platform-ops"
+        description: "Platform Operations"
+
+  - path: "/api/admin"
+    teams:
+      - name: "admin-team"
+        description: "Administration Team"
+      - name: "security"
+        description: "Security Team"
+
+  - path: "/api/public"
+    teams: []  # Aucune restriction d'accès

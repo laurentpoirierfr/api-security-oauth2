@@ -1,0 +1,103 @@
+{
+    "id": "demo",
+    "realm": "demo",
+    "enabled": true,
+    "roles": {
+      "realm": [
+        {
+          "name": "DEMO_ADMIN",
+          "description": "Administrator role for demo",
+          "composite": false,
+          "clientRole": false,
+          "containerId": "demo"
+        }
+      ]
+    },
+    "clients": [
+      {
+        "clientId": "frontend",
+        "secret": "mysecret",
+        "enabled": true,
+        "protocol": "openid-connect",
+        "directAccessGrantsEnabled": true,
+        "publicClient": true,
+        "redirectUris": ["http://localhost:9090/*"],
+        "protocolMappers": [
+          {
+            "name": "audience-backend",
+            "protocol": "openid-connect",
+            "protocolMapper": "oidc-audience-mapper",
+            "config": {
+              "included.client.audience": "backend",
+              "id.token.claim": "true",
+              "access.token.claim": "true",
+              "lightweight.claim": "false",
+              "introspection.token.claim": "true"
+            }
+          }
+        ]
+      },
+      {
+        "clientId": "backend",
+        "secret": "mysecret",
+        "enabled": true,
+        "protocol": "openid-connect",
+        "publicClient": false,
+        "serviceAccountsEnabled": true,
+        "standardFlowEnabled": true,
+        "directAccessGrantsEnabled": true,
+        "redirectUris": ["http://localhost:8888/*"],
+        "attributes": {
+          "access.token.lifespan": "1800"
+        },
+        "protocolMappers": [
+          {
+            "name": "audience-backend",
+            "protocol": "openid-connect",
+            "protocolMapper": "oidc-audience-mapper",
+            "config": {
+              "included.client.audience": "backend",
+              "id.token.claim": "true",
+              "access.token.claim": "true",
+              "lightweight.claim": "false",
+              "introspection.token.claim": "true"
+            }
+          }
+        ]
+      }
+    ],
+    "users": [
+      {
+        "username": "user",
+        "enabled": true,
+        "email": "user@example.com",
+        "emailVerified": true,
+        "firstName": "Jean",
+        "lastName": "DUPONT",
+        "credentials": [
+          {
+            "type": "password",
+            "value": "test",
+            "temporary": false
+          }
+        ]
+      },
+      {
+        "username": "adminuser",
+        "enabled": true,
+        "email": "admin@example.com",
+        "emailVerified": true,
+        "firstName": "Bruno",
+        "lastName": "TESTU",
+        "credentials": [
+          {
+            "type": "password",
+            "value": "test",
+            "temporary": false
+          }
+        ],
+        "realmRoles": ["DEMO_ADMIN"]
+      }
+    ]
+  }
+  
