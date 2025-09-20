@@ -5,6 +5,8 @@ import (
 
 	"github.com/laurentpoirierfr/api-security-oauth2/internal/config"
 	"github.com/laurentpoirierfr/api-security-oauth2/internal/server"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 //go:embed config.yaml
