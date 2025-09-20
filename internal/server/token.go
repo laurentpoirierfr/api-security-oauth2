@@ -2,8 +2,12 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,60 +37,65 @@ type TokenInfo struct {
 	PreferredUsername string `json:"preferred_username"`
 }
 
-// extractTokenInfo extrait et parse les informations du token
+// extractTokenInfo extrait et parse les informations du token via l'endpoint userinfo
 func (s *proxyServer) extractTokenInfo(ctx context.Context, tokenString string) (*TokenInfo, error) {
-	// req, err := http.NewRequestWithContext(ctx, "GET", s.cfg.Server.OAuth2.Endpoints.UserInfoURL, nil)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("failed to create request: %w", err)
-	// }
-
-	// req.Header.Set("Authorization", "Bearer "+tokenString)
-
-	// client := &http.Client{}
-	// resp, err := client.Do(req)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("failed to get user info: %w", err)
-	// }
-	// defer resp.Body.Close()
-
-	// if resp.StatusCode != http.StatusOK {
-	// 	return nil, fmt.Errorf("userinfo endpoint returned status: %d", resp.StatusCode)
-	// }
-
-	// var tokenInfo TokenInfo
-	// if err := json.NewDecoder(resp.Body).Decode(&tokenInfo); err != nil {
-	// 	return nil, fmt.Errorf("failed to decode user info: %w", err)
-	// }
-	// Instance basique
-	tokenInfo := TokenInfo{
-		Sub:               "1234567890",
-		UID:               "john.doe",
-		Email:             "john.doe@example.com",
-		Name:              "John Doe",
-		GivenName:         "John",
-		FamilyName:        "Doe",
-		Groups:            []string{"admin", "users"},
-		Teams:             []string{"backend", "frontend"},
-		Scope:             "openid profile email",
-		Expiration:        1704067200, // 1er janvier 2024
-		IssuedAt:          1703980800, // 31 décembre 2023
-		Issuer:            "http://localhost:8080/realms/demo",
-		ClientID:          "my-client-app",
-		TokenType:         "Bearer",
-		PreferredUsername: "johndoe",
+	// Créer la requête vers l'endpoint userinfo
+	req, err := http.NewRequestWithContext(ctx, "GET", s.cfg.Server.OAuth2.Endpoints.UserInfoURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	// Initialiser les structures imbriquées
-	tokenInfo.RealmAccess.Roles = []string{"user", "admin"}
-	tokenInfo.ResourceAccess = map[string]struct {
-		Roles []string `json:"roles"`
-	}{
-		"account": {
-			Roles: []string{"manage-account", "view-profile"},
-		},
-		"my-client-app": {
-			Roles: []string{"read", "write"},
-		},
+	// Ajouter le token Bearer dans les headers
+	req.Header.Set("Authorization", "Bearer "+tokenString)
+	req.Header.Set("Content-Type", "application/json")
+
+	// Créer un client HTTP avec timeout
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+
+	// Exécuter la requête
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user info: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Vérifier le statut de la réponse
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("userinfo endpoint returned status: %d", resp.StatusCode)
+	}
+
+	// Décoder la réponse JSON
+	var tokenInfo TokenInfo
+	if err := json.NewDecoder(resp.Body).Decode(&tokenInfo); err != nil {
+		return nil, fmt.Errorf("failed to decode user info: %w", err)
+	}
+
+	// Validation des champs obligatoires
+	if tokenInfo.Sub == "" {
+		return nil, fmt.Errorf("missing required field 'sub' in token info")
+	}
+
+	// Initialiser les champs qui peuvent être vides
+	if tokenInfo.TokenType == "" {
+		tokenInfo.TokenType = "Bearer"
+	}
+
+	// Initialiser les structures imbriquées si elles sont nil
+	if tokenInfo.RealmAccess.Roles == nil {
+		tokenInfo.RealmAccess.Roles = []string{}
+	}
+	if tokenInfo.ResourceAccess == nil {
+		tokenInfo.ResourceAccess = make(map[string]struct {
+			Roles []string `json:"roles"`
+		})
+	}
+	if tokenInfo.Groups == nil {
+		tokenInfo.Groups = []string{}
+	}
+	if tokenInfo.Teams == nil {
+		tokenInfo.Teams = []string{}
 	}
 
 	return &tokenInfo, nil
