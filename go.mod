@@ -8,6 +8,7 @@ require (
 	github.com/dvwright/xss-mw v0.0.0-20250730071903-b720c3d189c2
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.10.1
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/joho/godotenv v1.5.1
 	github.com/prometheus/client_golang v1.23.2
 	github.com/spf13/viper v1.21.0
