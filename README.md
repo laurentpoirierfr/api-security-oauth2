@@ -1,38 +1,77 @@
 # README
 
+## Présentation du composant
 
-```m̀ermaids
-graph LR
-    A[apply] --> B[kubectl apply -f <file>]
-    A --> C[kubectl create -f <file>]
-    A --> D[kubectl edit -f <file>]
-    B --o[options] Y{
-    Y1[--dry-run=client/server]
-    Y2[--namespace=<namespace>]
-    }
-    C --o[options] Z{
-    Z1[--dry-run=client/server]
-    Z2[--force]
-    Z3[--namespace=<namespace>]
-    }
-    D --o[options] AA{
-    AA1[--dry-run=client/server]
-    AA2[--editor=<editor>]
-    }
-    E[delete] --> F[kubectl delete -f <file>]
-    F --o[options] BB{
-    BB1[--grace-period=<duration>]
-    BB2[--force]
-    BB3[--ignore-not-found]
-    BB4[--namespace=<namespace>]
-    }
-    G[get] --> H[kubectl get <resource> [<name>|-o wide]]
-    H --o[options] CC{
-    CC1[--dry-run=client/server]
-    CC2[--output=json/yaml/template/wide/custom-columns/go-template/name/raw]
-    CC3[--watch]
-    }
-    I[describe] --> J[kubectl describe <resource> <name>]
-    K[logs] --> L[kubectl logs <pod-name> [-f]]
+Ce projet est un composant de sécurité API basé sur OAuth2, développé en Go. Il permet de protéger les endpoints d'une API en vérifiant et en validant les jetons d'accès OAuth2. Le composant s'intègre facilement dans des applications Go et offre une gestion centralisée de l'authentification et des autorisations.
 
+### Fonctionnalités principales
+
+- Vérification des jetons OAuth2
+- Protection des routes API
+- Configuration flexible des scopes et des permissions
+- Intégration avec différents fournisseurs OAuth2
+
+### Configuration
+
+Personnalisez les paramètres de sécurité selon vos besoins dans le fichier de configuration ou via des variables d'environnement.
+
+``ỳaml
+application:
+  name: api-security-oauth2
+  description: API Security with OAuth2 Example
+  version: 1.0.0
+
+server:
+  port: 8081
+  default_target: http://localhost:3000
+  timeout: 10
+  oauth2:
+    client_id: "backend"
+    client_secret: "mysecret"
+    redirect_url: "http://localhost:8081/callback"
+    endpoints:
+      auth_url: "http://localhost:8080/realms/demo/protocol/openid-connect/auth"
+      token_url: "http://localhost:8080/realms/demo/protocol/openid-connect/token"
+      tokeninfo_url: "http://localhost:8080/realms/demo/protocol/openid-connect/tokeninfo"
+      userinfo_url: "http://localhost:8080/realms/demo/protocol/openid-connect/userinfo"
+
+routes:
+  - path: "/api/opensource"
+    target: "http://localhost:3000/api/opensource"
+    teams:
+      - name: "opensourceguild"
+        description: "OpenSource Guild"
+      - name: "opensource-contributors"
+        description: "OpenSource Contributors"
+      - name: "backend"
+        description: "Default backend access" 
+
+  - path: "/api/platform"
+    target: "http://localhost:3000/api/platform"
+    teams:
+      - name: "tm"
+        description: "Platform / System"
+      - name: "teapot"
+        description: "Platform / Cloud API"
+      - name: "platform-ops"
+        description: "Platform Operations"
+
+  - path: "/api/admin"
+    target: "http://localhost:3000/api/admin"
+    teams:
+      - name: "admin-team"
+        description: "Administration Team"
+      - name: "security"
+        description: "Security Team"
+
+  - path: "/api/public"
+    target: "http://localhost:3000/api/public"
+    teams: [] # Aucune restriction d'accès
 ```
+### Contribution
+
+Les contributions sont les bienvenues ! Veuillez ouvrir une issue ou soumettre une pull request.
+
+### Licence
+
+Ce projet est sous licence MIT.
