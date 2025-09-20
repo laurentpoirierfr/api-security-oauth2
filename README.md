@@ -15,7 +15,7 @@ Ce projet est un composant de sécurité API basé sur OAuth2, développé en Go
 
 Personnalisez les paramètres de sécurité selon vos besoins dans le fichier de configuration ou via des variables d'environnement.
 
-``ỳaml
+```yaml
 application:
   name: api-security-oauth2
   description: API Security with OAuth2 Example
@@ -68,6 +68,7 @@ routes:
     target: "http://localhost:3000/api/public"
     teams: [] # Aucune restriction d'accès
 ```
+
 ### Contribution
 
 Les contributions sont les bienvenues ! Veuillez ouvrir une issue ou soumettre une pull request.
