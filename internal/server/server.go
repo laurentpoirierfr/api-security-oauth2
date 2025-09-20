@@ -3,6 +3,8 @@ package server
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/laurentpoirierfr/api-security-oauth2/internal/config"
+
+	"github.com/charmbracelet/log"
 )
 
 type Server interface {
@@ -33,5 +35,6 @@ func (s *proxyServer) Start() error {
 	// Add middleware
 	s.addMiddlewares()
 
+	log.Info("Starting server on port " + s.cfg.Server.Port)
 	return s.engine.Run(":" + s.cfg.Server.Port)
 }

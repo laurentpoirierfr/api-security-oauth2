@@ -24,14 +24,12 @@ func (s *proxyServer) addOpsRoutes() {
 	// Health, Metrics, Info
 	// /ops/readiness
 	s.engine.GET("/ops/readiness", func(c *gin.Context) {
-		health := NewHealth("ready")
-		c.JSON(200, health)
+		c.JSON(200, NewHealth("ready"))
 	})
 
 	// /ops/liveness
 	s.engine.GET("/ops/liveness", func(c *gin.Context) {
-		health := NewHealth("alive")
-		c.JSON(200, health)
+		c.JSON(200, NewHealth("alive"))
 	})
 
 	// /ops/metrics
